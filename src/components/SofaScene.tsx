@@ -56,6 +56,7 @@ function SofaModel({ color, dimensions, onModelLoad }: any) {
   const sofaGeometry = useMemo(() => {
     return {
       seat: <boxGeometry args={[dimensions.width, 0.2, dimensions.depth - thickness]} />,
+      // args = [width, height, depth] = [x, z, y]
       back: <boxGeometry args={[dimensions.width, dimensions.height, thickness]} />,
       armLeft: <boxGeometry args={[thickness, dimensions.height * 0.5, dimensions.depth - thickness]} />,
       armRight: <boxGeometry args={[thickness, dimensions.height * 0.5, dimensions.depth - thickness]} />,
@@ -80,6 +81,7 @@ function SofaModel({ color, dimensions, onModelLoad }: any) {
   return (
     <group ref={groupRef}>
       {/* Seat - centered at origin */}
+      {/* position = [x, z, y] = [width, depth, height] */}
       <mesh position={[0, 0, 0]} castShadow receiveShadow>
         {sofaGeometry.seat}
         {sofaMaterial}
