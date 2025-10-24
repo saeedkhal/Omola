@@ -89,9 +89,11 @@ function App() {
 
   // Handle wall count change
   const handleWallCountChange = useCallback((count) => {
-    setWallCount(count);
+    // Limit to maximum 3 walls
+    const limitedCount = Math.min(count, 3);
+    setWallCount(limitedCount);
     setWallWidths(prev => {
-      const newWidths = Array.from({ length: count }, (_, i) => prev[i] || 2.0);
+      const newWidths = Array.from({ length: limitedCount }, (_, i) => prev[i] || 2.0);
       return newWidths;
     });
   }, []);
@@ -162,9 +164,9 @@ function App() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3 justify-center">
                 <Sofa size={32} className="text-primary" />
                 {t('app.title')}
               </h1>
@@ -197,16 +199,6 @@ function App() {
                     onModelLoad={handleModelLoad}
                   />
                 </Suspense>
-              </div>
-              <div className="p-4 bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">{t('app.status')}:</span> {modelLoaded ? t('app.modelLoaded') : t('app.loading')}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">{t('app.controls')}:</span> {t('app.controlsDescription')}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
