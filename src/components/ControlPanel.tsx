@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../contexts/LanguageContext';
+import { Send } from 'lucide-react';
 
 // Color Swatch Component
 function ColorSwatch({ color, isSelected, onClick }: any) {
@@ -16,31 +17,42 @@ function ColorSwatch({ color, isSelected, onClick }: any) {
 }
 
 // Dimension Control Component
-function DimensionControl({ label, value, min, max, step, onChange, unit = 'm' }: any) {
+function DimensionControl({ label, value, min, max, step, onChange, unit = 'cm' }: any) {
   const { t } = useTranslation();
+  
+  // Convert meters to centimeters for display
+  const displayValue = Math.round(value * 100);
+  const displayMin = Math.round(min * 100);
+  const displayMax = Math.round(max * 100);
+  const displayStep = Math.round(step * 100);
+  
+  const handleChange = (cmValue: number) => {
+    // Convert centimeters back to meters for internal state
+    onChange(cmValue / 100);
+  };
   
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700">
-        {label} ({unit})
+        {label} ({t('controls.unit')})
       </label>
       <div className="flex items-center space-x-3">
         <input
           type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(parseFloat(e.target.value))}
+          min={displayMin}
+          max={displayMax}
+          step={displayStep}
+          value={displayValue}
+          onChange={(e) => handleChange(parseFloat(e.target.value))}
           className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
         />
         <input
           type="number"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(parseFloat(e.target.value))}
+          min={displayMin}
+          max={displayMax}
+          step={displayStep}
+          value={displayValue}
+          onChange={(e) => handleChange(parseFloat(e.target.value))}
           className="w-20 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
@@ -63,6 +75,7 @@ function ControlPanel({
 }: any) {
   const { t } = useTranslation();
   const [customColor, setCustomColor] = useState(color);
+  const WHATSAPP_NUMBER = '+201010023300';
 
   // Predefined color swatches
   const colorSwatches = [
@@ -91,14 +104,30 @@ function ControlPanel({
     onColorChange(swatchColor);
   }, [onColorChange]);
 
-  const handleSave = useCallback(() => {
-    const configuration = {
-      color: customColor,
-      dimensions: dimensions,
-      timestamp: new Date().toISOString()
-    };
-    onSaveConfiguration(configuration);
-  }, [customColor, dimensions, onSaveConfiguration]);
+  const handleSendWhatsApp = useCallback(() => {
+    // Get current URL with all parameters
+    const currentURL = window.location.href;
+    
+    // Create a message with configuration details (convert to cm)
+    const message = `${t('controls.whatsappMessage') || 'Check out my sofa configuration'}:
+    
+${t('controls.color')}: ${customColor}
+${t('controls.walls')}: ${wallCount}
+${wallWidths.map((width: number, index: number) => `${t('controls.wall')} ${index + 1}: ${Math.round(width * 100)}${t('controls.unit') || 'cm'}`).join('\n')}
+${t('controls.height')}: ${Math.round(dimensions.height * 100)}${t('controls.unit') || 'cm'}
+${t('controls.depth')}: ${Math.round(dimensions.depth * 100)}${t('controls.unit') || 'cm'}
+
+${t('controls.viewConfiguration') || 'View Configuration'}: ${currentURL}`;
+    
+    // Encode message for WhatsApp URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Create WhatsApp URL
+    const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, '')}?text=${encodedMessage}`;
+    
+    // Open WhatsApp in a new window
+    window.open(whatsappURL, '_blank');
+  }, [customColor, dimensions, wallCount, wallWidths, t, WHATSAPP_NUMBER]);
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
@@ -221,19 +250,14 @@ function ControlPanel({
         />
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex space-x-3 pt-4 border-t border-gray-200">
+      {/* Action Button */}
+      <div className="pt-4 border-t border-gray-200">
         <button
-          onClick={onReset}
-          className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium"
+          onClick={handleSendWhatsApp}
+          className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium flex items-center justify-center gap-2"
         >
-          {t('controls.resetToDefault')}
-        </button>
-        <button
-          onClick={handleSave}
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
-        >
-          {t('controls.saveConfiguration')}
+          <Send size={20} />
+          {t('controls.sendViaWhatsApp') || 'Send via WhatsApp'}
         </button>
       </div>
 
@@ -245,11 +269,11 @@ function ControlPanel({
           <div>{t('controls.walls') || 'Walls'}: {wallCount}</div>
           {wallWidths.map((width: number, index: number) => (
             <div key={index} className="pl-4">
-              {t('controls.wall') || 'Wall'} {index + 1}: {width.toFixed(1)}m
+              {t('controls.wall') || 'Wall'} {index + 1}: {Math.round(width * 100)}{t('controls.unit') || 'cm'}
             </div>
           ))}
-          <div>{t('controls.height')}: {dimensions.height.toFixed(1)}m</div>
-          <div>{t('controls.depth')}: {dimensions.depth.toFixed(1)}m</div>
+          <div>{t('controls.height')}: {Math.round(dimensions.height * 100)}{t('controls.unit') || 'cm'}</div>
+          <div>{t('controls.depth')}: {Math.round(dimensions.depth * 100)}{t('controls.unit') || 'cm'}</div>
         </div>
       </div>
     </div>

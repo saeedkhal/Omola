@@ -1,4 +1,4 @@
-import React, { useState, useCallback, Suspense } from 'react';
+import React, { useState, useCallback, Suspense, useEffect } from 'react';
 import SofaScene, { LoadingSpinner } from './components/SofaScene';
 import ControlPanel from './components/ControlPanel';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -17,12 +17,59 @@ const DEFAULT_CONFIG = {
 
 function App() {
   const { t } = useTranslation();
-  const [color, setColor] = useState(DEFAULT_CONFIG.color);
-  const [dimensions, setDimensions] = useState(DEFAULT_CONFIG.dimensions);
-  const [wallCount, setWallCount] = useState(2);
-  const [wallWidths, setWallWidths] = useState([2.0, 1.5]);
+  
+  // Parse URL parameters on initial load
+  const getInitialState = useCallback(() => {
+    const params = new URLSearchParams(window.location.search);
+    
+    return {
+      color: params.get('color') || DEFAULT_CONFIG.color,
+      height: parseFloat(params.get('height')) || DEFAULT_CONFIG.dimensions.height,
+      depth: parseFloat(params.get('depth')) || DEFAULT_CONFIG.dimensions.depth,
+      wallCount: parseInt(params.get('wallCount')) || 2,
+      wallWidths: params.get('wallWidths') 
+        ? params.get('wallWidths').split(',').map(w => parseFloat(w))
+        : [2.0, 1.5]
+    };
+  }, []);
+
+  const initialState = getInitialState();
+  
+  const [color, setColor] = useState(initialState.color);
+  const [dimensions, setDimensions] = useState({
+    width: 2.0, // Not used anymore, kept for compatibility
+    height: initialState.height,
+    depth: initialState.depth
+  });
+  const [wallCount, setWallCount] = useState(initialState.wallCount);
+  const [wallWidths, setWallWidths] = useState(initialState.wallWidths);
   const [modelLoaded, setModelLoaded] = useState(false);
   const [savedConfigurations, setSavedConfigurations] = useState([]);
+
+  // Update URL with current configuration
+  const updateURL = useCallback((params) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    
+    Object.keys(params).forEach(key => {
+      if (params[key] !== null && params[key] !== undefined) {
+        searchParams.set(key, params[key]);
+      }
+    });
+    
+    const newURL = `${window.location.pathname}?${searchParams.toString()}`;
+    window.history.replaceState({}, '', newURL);
+  }, []);
+
+  // Sync state to URL whenever it changes
+  useEffect(() => {
+    updateURL({
+      color: color,
+      height: dimensions.height.toFixed(1),
+      depth: dimensions.depth.toFixed(1),
+      wallCount: wallCount,
+      wallWidths: wallWidths.map(w => w.toFixed(1)).join(',')
+    });
+  }, [color, dimensions.height, dimensions.depth, wallCount, wallWidths, updateURL]);
 
   // Handle color changes
   const handleColorChange = useCallback((newColor) => {
@@ -57,6 +104,9 @@ function App() {
     setDimensions(DEFAULT_CONFIG.dimensions);
     setWallCount(2);
     setWallWidths([2.0, 1.5]);
+    
+    // Clear URL parameters
+    window.history.replaceState({}, '', window.location.pathname);
   }, []);
 
   // Handle model load
@@ -189,9 +239,9 @@ function App() {
                       </span>
                     </div>
                     <div className="text-xs text-gray-600 space-y-1">
-                      <div>{t('controls.width')}: {config.dimensions.width.toFixed(1)}m</div>
-                      <div>{t('controls.height')}: {config.dimensions.height.toFixed(1)}m</div>
-                      <div>{t('controls.depth')}: {config.dimensions.depth.toFixed(1)}m</div>
+                      <div>{t('controls.width')}: {config.dimensions.width.toFixed(1)} {t('controls.unit')}</div>
+                      <div>{t('controls.height')}: {config.dimensions.height.toFixed(1)} {t('controls.unit')}</div>
+                      <div>{t('controls.depth')}: {config.dimensions.depth.toFixed(1)} {t('controls.unit')}</div>
                       <div className="text-gray-400">
                         {new Date(config.timestamp).toLocaleString()}
                       </div>
