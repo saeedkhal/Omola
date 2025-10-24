@@ -65,16 +65,30 @@ function ControlPanel({
   dimensions,
   wallCount,
   wallWidths,
+  fabricType,
   onColorChange, 
   onDimensionChange,
   onWallCountChange,
   onWallWidthChange,
-  onReset,
-  onSaveConfiguration 
+  onFabricChange,
 }: any) {
   const { t } = useTranslation();
   const [customColor, setCustomColor] = useState(color);
   const WHATSAPP_NUMBER = '+201010023300';
+
+  // Fabric options
+  const fabricOptions = [
+    { value: 'cotton', label: t('controls.cotton') },
+    { value: 'linen', label: t('controls.linen') },
+    { value: 'naturalSilk', label: t('controls.naturalSilk') },
+    { value: 'velvet', label: t('controls.velvet') },
+    { value: 'suede', label: t('controls.suede') },
+    { value: 'naturalLeather', label: t('controls.naturalLeather') },
+    { value: 'syntheticLeather', label: t('controls.syntheticLeather') },
+    { value: 'satin', label: t('controls.satin') },
+    { value: 'chenille', label: t('controls.chenille') },
+    { value: 'mixedFabrics', label: t('controls.mixedFabrics') },
+  ];
 
   // Predefined color swatches
   const colorSwatches = [
@@ -107,14 +121,24 @@ function ControlPanel({
     // Get current URL with all parameters
     const currentURL = window.location.href;
     
+    // Calculate total price
+    const totalWidth = wallWidths.reduce((sum: number, width: number) => sum + Math.round(width * 100), 0);
+    const totalPrice = totalWidth * 5;
+    
+    // Get fabric label
+    const fabricLabel = fabricOptions.find((f: any) => f.value === fabricType)?.label || fabricType;
+    
     // Create a message with configuration details (convert to cm)
     const message = `${t('controls.whatsappMessage') || 'Check out my sofa configuration'}:
     
 ${t('controls.color')}: ${customColor}
+${t('controls.fabricType')}: ${fabricLabel}
 ${t('controls.walls')}: ${wallCount}
 ${wallWidths.map((width: number, index: number) => `${t(`controls.wall${index + 1}`) || `${t('controls.wall')} ${index + 1}`}: ${Math.round(width * 100)}${t('controls.unit') || 'cm'}`).join('\n')}
 ${t('controls.height')}: ${Math.round(dimensions.height * 100)}${t('controls.unit') || 'cm'}
 ${t('controls.depth')}: ${Math.round(dimensions.depth * 100)}${t('controls.unit') || 'cm'}
+
+${t('controls.totalPrice') || 'Total Price'}: ${totalPrice.toLocaleString()} ${t('controls.egp') || 'EGP'}
 
 ${t('controls.viewConfiguration') || 'View Configuration'}: ${currentURL}`;
     
@@ -126,12 +150,34 @@ ${t('controls.viewConfiguration') || 'View Configuration'}: ${currentURL}`;
     
     // Open WhatsApp in a new window
     window.open(whatsappURL, '_blank');
-  }, [customColor, dimensions, wallCount, wallWidths, t, WHATSAPP_NUMBER]);
+  }, [customColor, dimensions, wallCount, wallWidths, fabricType, fabricOptions, t, WHATSAPP_NUMBER]);
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('controls.title')}</h2>
       
+      {/* Fabric Type Selection */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-gray-700">{t('controls.fabricType')}</h3>
+        
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            {t('controls.selectFabric')}
+          </label>
+          <select
+            value={fabricType}
+            onChange={(e) => onFabricChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            {fabricOptions.map((fabric: any) => (
+              <option key={fabric.value} value={fabric.value}>
+                {fabric.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {/* Color Selection */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-700">{t('controls.chooseColor')}</h3>
@@ -265,6 +311,7 @@ ${t('controls.viewConfiguration') || 'View Configuration'}: ${currentURL}`;
         <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('controls.currentConfiguration')}</h4>
         <div className="text-sm text-gray-600 space-y-1">
           <div className='flex items-center gap-2'>{t('controls.color')}: <div className="font-mono w-6 h-6 rounded-full" style={{ backgroundColor: customColor }}></div></div>
+          <div>{t('controls.fabricType')}: {fabricOptions.find((f: any) => f.value === fabricType)?.label || fabricType}</div>
           <div>{t('controls.walls') || 'Walls'}: {wallCount}</div>
           {wallWidths.map((width: number, index: number) => (
             <div key={index} className="pl-4">
@@ -273,6 +320,13 @@ ${t('controls.viewConfiguration') || 'View Configuration'}: ${currentURL}`;
           ))}
           <div>{t('controls.height')}: {Math.round(dimensions.height * 100)}{t('controls.unit') || 'cm'}</div>
           <div>{t('controls.depth')}: {Math.round(dimensions.depth * 100)}{t('controls.unit') || 'cm'}</div>
+          
+          {/* Price Calculation */}
+          <div className="pt-3 mt-3 border-t border-gray-300">
+            <div className="font-semibold text-green-700 text-base">
+              {t('controls.totalPrice') || 'Total Price'}: {(wallWidths.reduce((sum: number, width: number) => sum + Math.round(width * 100), 0) * 5).toLocaleString()} {t('controls.egp') || 'EGP'}
+            </div>
+          </div>
         </div>
       </div>
     </div>

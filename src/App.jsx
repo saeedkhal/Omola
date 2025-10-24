@@ -7,7 +7,7 @@ import { Sofa, Heart, Code } from 'lucide-react';
 
 // Default configuration
 const DEFAULT_CONFIG = {
-  color: '#8B4513', // Saddle Brown
+  color: '#F4A460', // Sandy Brown
   dimensions: {
     width: 2.0,
     height: 0.8,
@@ -26,10 +26,11 @@ function App() {
       color: params.get('color') || DEFAULT_CONFIG.color,
       height: parseFloat(params.get('height')) || DEFAULT_CONFIG.dimensions.height,
       depth: parseFloat(params.get('depth')) || DEFAULT_CONFIG.dimensions.depth,
-      wallCount: parseInt(params.get('wallCount')) || 2,
+      wallCount: parseInt(params.get('wallCount')) || 3,
       wallWidths: params.get('wallWidths') 
         ? params.get('wallWidths').split(',').map(w => parseFloat(w))
-        : [2.0, 1.5]
+        : [2.0, 1.5, 1.8],
+      fabricType: params.get('fabricType') || 'cotton'
     };
   }, []);
 
@@ -43,6 +44,7 @@ function App() {
   });
   const [wallCount, setWallCount] = useState(initialState.wallCount);
   const [wallWidths, setWallWidths] = useState(initialState.wallWidths);
+  const [fabricType, setFabricType] = useState(initialState.fabricType);
   const [modelLoaded, setModelLoaded] = useState(false);
   const [savedConfigurations, setSavedConfigurations] = useState([]);
 
@@ -67,9 +69,10 @@ function App() {
       height: dimensions.height.toFixed(1),
       depth: dimensions.depth.toFixed(1),
       wallCount: wallCount,
-      wallWidths: wallWidths.map(w => w.toFixed(1)).join(',')
+      wallWidths: wallWidths.map(w => w.toFixed(1)).join(','),
+      fabricType: fabricType
     });
-  }, [color, dimensions.height, dimensions.depth, wallCount, wallWidths, updateURL]);
+  }, [color, dimensions.height, dimensions.depth, wallCount, wallWidths, fabricType, updateURL]);
 
   // Handle color changes
   const handleColorChange = useCallback((newColor) => {
@@ -98,12 +101,18 @@ function App() {
     setWallWidths(prev => prev.map((w, i) => i === index ? width : w));
   }, []);
 
+  // Handle fabric type change
+  const handleFabricChange = useCallback((fabric) => {
+    setFabricType(fabric);
+  }, []);
+
   // Reset to default configuration
   const handleReset = useCallback(() => {
     setColor(DEFAULT_CONFIG.color);
     setDimensions(DEFAULT_CONFIG.dimensions);
-    setWallCount(2);
-    setWallWidths([2.0, 1.5]);
+    setWallCount(3);
+    setWallWidths([2.0, 1.5, 1.8]);
+    setFabricType('cotton');
     
     // Clear URL parameters
     window.history.replaceState({}, '', window.location.pathname);
@@ -209,10 +218,12 @@ function App() {
               dimensions={dimensions}
               wallCount={wallCount}
               wallWidths={wallWidths}
+              fabricType={fabricType}
               onColorChange={handleColorChange}
               onDimensionChange={handleDimensionChange}
               onWallCountChange={handleWallCountChange}
               onWallWidthChange={handleWallWidthChange}
+              onFabricChange={handleFabricChange}
               onReset={handleReset}
               onSaveConfiguration={handleSaveConfiguration}
             />
