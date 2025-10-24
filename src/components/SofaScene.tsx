@@ -49,18 +49,21 @@ function SofaModel({ color, dimensions, onModelLoad }: any) {
   const groupRef = useRef<any>();
 
   // Create a simple sofa using geometric shapes
+  const legRadius = 0.08; // Larger leg radius
+  const legHeight = 0.3; // Fixed leg height
+  
   const sofaGeometry = useMemo(() => {
     return {
-      seat: <boxGeometry args={[dimensions.width, 0.2, dimensions.depth]} />,
+      seat: <boxGeometry args={[dimensions.width, 0.2, dimensions.depth - 0.1]} />,
       back: <boxGeometry args={[dimensions.width, dimensions.height, 0.1]} />,
-      armLeft: <boxGeometry args={[0.1, dimensions.height * 0.5, dimensions.depth]} />,
-      armRight: <boxGeometry args={[0.1, dimensions.height * 0.5, dimensions.depth]} />,
-      leg1: <cylinderGeometry args={[0.05, 0.05, 0.3]} />,
-      leg2: <cylinderGeometry args={[0.05, 0.05, 0.3]} />,
-      leg3: <cylinderGeometry args={[0.05, 0.05, 0.3]} />,
-      leg4: <cylinderGeometry args={[0.05, 0.05, 0.3]} />,
+      armLeft: <boxGeometry args={[0.1, dimensions.height * 0.5, dimensions.depth - 0.1]} />,
+      armRight: <boxGeometry args={[0.1, dimensions.height * 0.5, dimensions.depth - 0.1]} />,
+      leg1: <cylinderGeometry args={[legRadius, legRadius, legHeight]} />,
+      leg2: <cylinderGeometry args={[legRadius, legRadius, legHeight]} />,
+      leg3: <cylinderGeometry args={[legRadius, legRadius, legHeight]} />,
+      leg4: <cylinderGeometry args={[legRadius, legRadius, legHeight]} />,
     };
-  }, [dimensions]);
+  }, [dimensions, legRadius]);
 
   const sofaMaterial = useMemo(() => {
     return <meshStandardMaterial color={color} />;
@@ -81,38 +84,38 @@ function SofaModel({ color, dimensions, onModelLoad }: any) {
         {sofaMaterial}
       </mesh>
 
-      {/* Back */}
-      <mesh position={[0, dimensions.height * 0.4, -dimensions.depth * 0.4]} castShadow receiveShadow>
+      {/* Back - starts at top of seat */}
+      <mesh position={[0, 0.1 + dimensions.height * 0.5, -dimensions.depth * 0.5 + 0.05]} castShadow receiveShadow>
         {sofaGeometry.back}
         {sofaMaterial}
       </mesh>
 
-      {/* Left Arm - positioned so outer edge aligns with sofa start */}
-      <mesh position={[-(dimensions.width * 0.5 - 0.05), dimensions.height * 0.2, 0]} castShadow receiveShadow>
+      {/* Left Arm - starts at top of seat */}
+      <mesh position={[-(dimensions.width * 0.5 - 0.05), 0.1 + dimensions.height * 0.25, 0]} castShadow receiveShadow>
         {sofaGeometry.armLeft}
         {sofaMaterial}
       </mesh>
 
-      {/* Right Arm - positioned so outer edge aligns with sofa end */}
-      <mesh position={[dimensions.width * 0.5 - 0.05, dimensions.height * 0.2, 0]} castShadow receiveShadow>
+      {/* Right Arm - starts at top of seat */}
+      <mesh position={[dimensions.width * 0.5 - 0.05, 0.1 + dimensions.height * 0.25, 0]} castShadow receiveShadow>
         {sofaGeometry.armRight}
         {sofaMaterial}
       </mesh>
 
-      {/* Legs - with fixed height */}
-      <mesh position={[-dimensions.width * 0.5, -0.25, -dimensions.depth * 0.3]} castShadow receiveShadow>
+      {/* Legs - positioned inside the sofa edges */}
+      <mesh position={[-dimensions.width * 0.4, -0.25, -dimensions.depth * 0.35]} castShadow receiveShadow>
         {sofaGeometry.leg1}
         {sofaMaterial}
       </mesh>
-      <mesh position={[dimensions.width * 0.5, -0.25, -dimensions.depth * 0.3]} castShadow receiveShadow>
+      <mesh position={[dimensions.width * 0.4, -0.25, -dimensions.depth * 0.35]} castShadow receiveShadow>
         {sofaGeometry.leg2}
         {sofaMaterial}
       </mesh>
-      <mesh position={[-dimensions.width * 0.5, -0.25, dimensions.depth * 0.3]} castShadow receiveShadow>
+      <mesh position={[-dimensions.width * 0.4, -0.25, dimensions.depth * 0.35]} castShadow receiveShadow>
         {sofaGeometry.leg3}
         {sofaMaterial}
       </mesh>
-      <mesh position={[dimensions.width * 0.5, -0.25, dimensions.depth * 0.3]} castShadow receiveShadow>
+      <mesh position={[dimensions.width * 0.4, -0.25, dimensions.depth * 0.35]} castShadow receiveShadow>
         {sofaGeometry.leg4}
         {sofaMaterial}
       </mesh>
