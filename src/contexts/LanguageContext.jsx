@@ -28,19 +28,13 @@ export const useTranslation = () => {
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
-    // Check localStorage first, then browser language, default to Arabic
+    // Check localStorage first, default to Arabic
     const savedLanguage = localStorage.getItem('language');
     if (savedLanguage && translations[savedLanguage]) {
       return savedLanguage;
     }
     
-    // Check browser language
-    const browserLang = navigator.language.split('-')[0];
-    if (translations[browserLang]) {
-      return browserLang;
-    }
-    
-    // Default to Arabic
+    // Always default to Arabic
     return 'ar';
   });
 
