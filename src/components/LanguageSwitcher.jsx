@@ -27,8 +27,8 @@ const LanguageSwitcher = () => {
 
   return (
     <div className="flex items-center space-x-2">
-      <Globe size={16} className="text-gray-600" />
-      <select
+      {/* <Globe size={16} className="text-gray-600" /> */}
+      {/* <select
         value={language || 'ar'}
         onChange={(e) => changeLanguage(e.target.value)}
         className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
@@ -38,7 +38,7 @@ const LanguageSwitcher = () => {
             {languageNames[lang] || lang}
           </option>
         ))}
-      </select>
+      </select> */}
     </div>
   );
 };

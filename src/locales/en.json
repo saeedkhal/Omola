@@ -7,8 +7,11 @@
     "loading": "Loading...",
     "controls": "Controls",
     "controlsDescription": "Drag to rotate • Scroll to zoom • Right-click to pan",
-    "builtWith": "Built with React, Three.js, and React Three Fiber",
-    "readyForBackend": "Ready for backend integration with Node.js, Express, and MongoDB"
+    "builtWith": "Made with love in Egypt",
+    "readyForBackend": "Ready for backend integration with Node.js, Express, and MongoDB",
+    "followUs": "Follow Us on Social Media",
+    "location": "Our Location",
+    "allRightsReserved": "All Rights Reserved"
   },
   "controls": {
     "title": "Customize Your Sofa",
