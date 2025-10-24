@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../contexts/LanguageContext';
 import { Send } from 'lucide-react';
-
 // Color Swatch Component
 function ColorSwatch({ color, isSelected, onClick }: any) {
   return (
@@ -17,7 +16,7 @@ function ColorSwatch({ color, isSelected, onClick }: any) {
 }
 
 // Dimension Control Component
-function DimensionControl({ label, value, min, max, step, onChange, unit = 'cm' }: any) {
+function DimensionControl({ label, value, min, max, step, onChange }: any) {
   const { t } = useTranslation();
   
   // Convert meters to centimeters for display
@@ -113,7 +112,7 @@ function ControlPanel({
     
 ${t('controls.color')}: ${customColor}
 ${t('controls.walls')}: ${wallCount}
-${wallWidths.map((width: number, index: number) => `${t('controls.wall')} ${index + 1}: ${Math.round(width * 100)}${t('controls.unit') || 'cm'}`).join('\n')}
+${wallWidths.map((width: number, index: number) => `${t(`controls.wall${index + 1}`) || `${t('controls.wall')} ${index + 1}`}: ${Math.round(width * 100)}${t('controls.unit') || 'cm'}`).join('\n')}
 ${t('controls.height')}: ${Math.round(dimensions.height * 100)}${t('controls.unit') || 'cm'}
 ${t('controls.depth')}: ${Math.round(dimensions.depth * 100)}${t('controls.unit') || 'cm'}
 
@@ -216,7 +215,7 @@ ${t('controls.viewConfiguration') || 'View Configuration'}: ${currentURL}`;
           {wallWidths.map((width: number, index: number) => (
             <DimensionControl
               key={index}
-              label={`${t('controls.wall') || 'Wall'} ${index + 1}`}
+              label={t(`controls.wall${index + 1}`) || `${t('controls.wall')} ${index + 1}`}
               value={width}
               min={0.5}
               max={5.0}
@@ -256,7 +255,7 @@ ${t('controls.viewConfiguration') || 'View Configuration'}: ${currentURL}`;
           onClick={handleSendWhatsApp}
           className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium flex items-center justify-center gap-2"
         >
-          <Send size={20} />
+         <Send size={20} />
           {t('controls.sendViaWhatsApp') || 'Send via WhatsApp'}
         </button>
       </div>
@@ -269,7 +268,7 @@ ${t('controls.viewConfiguration') || 'View Configuration'}: ${currentURL}`;
           <div>{t('controls.walls') || 'Walls'}: {wallCount}</div>
           {wallWidths.map((width: number, index: number) => (
             <div key={index} className="pl-4">
-              {t('controls.wall') || 'Wall'} {index + 1}: {Math.round(width * 100)}{t('controls.unit') || 'cm'}
+              {t(`controls.wall${index + 1}`) || `${t('controls.wall')} ${index + 1}`}: {Math.round(width * 100)}{t('controls.unit') || 'cm'}
             </div>
           ))}
           <div>{t('controls.height')}: {Math.round(dimensions.height * 100)}{t('controls.unit') || 'cm'}</div>

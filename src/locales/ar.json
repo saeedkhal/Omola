@@ -1,7 +1,7 @@
 {
   "app": {
     "title": " مول عمولة",
-    "subtitle": "صمم أريكتك المثالية مع التصور ثلاثي الأبعاد المباشر",
+    "subtitle": "صمم ركنتك الان مع مول عموله بكرداسة",
     "status": "الحالة",
     "modelLoaded": "تم تحميل النموذج",
     "loading": "جاري التحميل...",
@@ -21,6 +21,9 @@
     "wallWidths": "عرض الجدران",
     "wall": "عرض الجدار",
     "walls": "جدران",
+    "wall1": "الجدار الاول",
+    "wall2": "الجدار الثاني",
+    "wall3": "الجدار الثالث",
     "sharedDimensions": "ابعاد الركنه",
     "width": "العرض",
     "height": "الارتفاع",
@@ -28,7 +31,7 @@
     "unit": "سم",
     "resetToDefault": "إعادة تعيين للافتراضي",
     "saveConfiguration": "حفظ التكوين",
-    "sendViaWhatsApp": "إرسال عبر واتساب",
+    "sendViaWhatsApp": "إرسال التسعيرة عبر واتس الأبعاد",
     "whatsappMessage": "شاهد تصميم الركنة الخاص بي",
     "viewConfiguration": "عرض التصميم",
     "currentConfiguration": "التكوين الحالي",
