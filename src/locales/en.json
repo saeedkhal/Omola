@@ -1,0 +1,45 @@
+{
+  "app": {
+    "title": "Omola",
+    "subtitle": "Design your perfect sofa with real-time 3D visualization",
+    "status": "Status",
+    "modelLoaded": "Model Loaded",
+    "loading": "Loading...",
+    "controls": "Controls",
+    "controlsDescription": "Drag to rotate • Scroll to zoom • Right-click to pan",
+    "builtWith": "Built with React, Three.js, and React Three Fiber",
+    "readyForBackend": "Ready for backend integration with Node.js, Express, and MongoDB"
+  },
+  "controls": {
+    "title": "Customize Your Sofa",
+    "chooseColor": "Choose Color",
+    "customColor": "Custom Color",
+    "popularColors": "Popular Colors",
+    "adjustDimensions": "Adjust Dimensions",
+    "width": "Width",
+    "height": "Height",
+    "depth": "Depth",
+    "unit": "m",
+    "resetToDefault": "Reset to Default",
+    "saveConfiguration": "Save Configuration",
+    "currentConfiguration": "Current Configuration",
+    "color": "Color",
+    "savedConfigurations": "Saved Configurations",
+    "configuration": "Configuration",
+    "meter": "meter"
+  },
+  "colors": {
+    "saddleBrown": "Saddle Brown",
+    "chocolate": "Chocolate",
+    "peru": "Peru",
+    "sienna": "Sienna",
+    "sandyBrown": "Sandy Brown",
+    "burlywood": "Burlywood",
+    "tan": "Tan",
+    "rosyBrown": "Rosy Brown",
+    "darkSlateGray": "Dark Slate Gray",
+    "dimGray": "Dim Gray",
+    "black": "Black",
+    "white": "White"
+  }
+}

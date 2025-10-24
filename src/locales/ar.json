@@ -1,0 +1,45 @@
+{
+  "app": {
+    "title": "عمولة",
+    "subtitle": "صمم أريكتك المثالية مع التصور ثلاثي الأبعاد المباشر",
+    "status": "الحالة",
+    "modelLoaded": "تم تحميل النموذج",
+    "loading": "جاري التحميل...",
+    "controls": "أدوات التحكم",
+    "controlsDescription": "اسحب للدوران • مرر للتكبير • انقر بالزر الأيمن للتحريك",
+    "builtWith": "مبني بـ React و Three.js و React Three Fiber",
+    "readyForBackend": "جاهز للتكامل مع الخادم باستخدام Node.js و Express و MongoDB"
+  },
+  "controls": {
+    "title": "خصص أريكتك",
+    "chooseColor": "اختر اللون",
+    "customColor": "لون مخصص",
+    "popularColors": "الألوان الشائعة",
+    "adjustDimensions": "اضبط الأبعاد",
+    "width": "العرض",
+    "height": "الارتفاع",
+    "depth": "العمق",
+    "unit": "متر",
+    "resetToDefault": "إعادة تعيين للافتراضي",
+    "saveConfiguration": "حفظ التكوين",
+    "currentConfiguration": "التكوين الحالي",
+    "color": "اللون",
+    "savedConfigurations": "التكوينات المحفوظة",
+    "configuration": "التكوين",
+    "meter": "متر"
+  },
+  "colors": {
+    "saddleBrown": "بني السرج",
+    "chocolate": "شوكولاتة",
+    "peru": "بيرو",
+    "sienna": "سيينا",
+    "sandyBrown": "بني رملي",
+    "burlywood": "خشب البتولا",
+    "tan": "تان",
+    "rosyBrown": "بني وردي",
+    "darkSlateGray": "رمادي داكن",
+    "dimGray": "رمادي خافت",
+    "black": "أسود",
+    "white": "أبيض"
+  }
+}
