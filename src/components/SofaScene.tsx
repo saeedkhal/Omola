@@ -152,7 +152,7 @@ function SofaScene({ color, dimensions, wallWidths, onModelLoad }: any) {
       } else if (i === 1) {
         // Second sofa - perpendicular along Z-axis, positioned at the end of first
         positions.push({
-          position: [-currentX/2 + dimensions.depth/2 - dimensions.depth, 0, width/2 + dimensions.depth/2] as [number, number, number],
+          position: [-currentX/2 + dimensions.depth/2 - dimensions.depth , 0, width/2 + dimensions.depth/2] as [number, number, number],
           rotation: [0, Math.PI / 2, 0] as [number, number, number],
           width: width,
         });
@@ -161,7 +161,7 @@ function SofaScene({ color, dimensions, wallWidths, onModelLoad }: any) {
       } else if (i === 2) {
         // Third sofa - horizontal along negative X-axis
         positions.push({
-          position: [-currentX/2 + width/2, 0, currentZ  + dimensions.depth] as [number, number, number],
+          position: [-currentX/2 + width/2, 0, currentZ  + dimensions.depth ] as [number, number, number],
           rotation: [0, Math.PI, 0] as [number, number, number],
           width: width,
         });
@@ -177,7 +177,7 @@ function SofaScene({ color, dimensions, wallWidths, onModelLoad }: any) {
     }
 
     return positions;
-  }, [wallWidths]);
+  }, [wallWidths, dimensions.depth]);
 
   return (
     <Canvas
