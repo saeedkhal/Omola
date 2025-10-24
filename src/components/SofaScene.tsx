@@ -156,11 +156,12 @@ function SofaScene({ color, dimensions, wallWidths, onModelLoad }: any) {
           rotation: [0, Math.PI / 2, 0] as [number, number, number],
           width: width,
         });
-        currentZ += width;
+        currentZ = width;
+        currentX = wallWidths[0];
       } else if (i === 2) {
         // Third sofa - horizontal along negative X-axis
         positions.push({
-          position: [currentX - width / 2, 0, currentZ] as [number, number, number],
+          position: [-currentX/2 + width/2, 0, currentZ - thickness + dimensions.depth] as [number, number, number],
           rotation: [0, Math.PI, 0] as [number, number, number],
           width: width,
         });
