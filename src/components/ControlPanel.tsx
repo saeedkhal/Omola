@@ -161,7 +161,7 @@ function ControlPanel({
             <input
               type="range"
               min={1}
-              max={4}
+              max={3}
               step={1}
               value={wallCount}
               onChange={(e) => onWallCountChange(parseInt(e.target.value))}
@@ -170,7 +170,7 @@ function ControlPanel({
             <input
               type="number"
               min={1}
-              max={4}
+              max={3}
               step={1}
               value={wallCount}
               onChange={(e) => onWallCountChange(parseInt(e.target.value))}
@@ -190,7 +190,7 @@ function ControlPanel({
               label={`${t('controls.wall') || 'Wall'} ${index + 1}`}
               value={width}
               min={0.5}
-              max={3.0}
+              max={5.0}
               step={0.1}
               onChange={(value: number) => onWallWidthChange(index, value)}
             />
