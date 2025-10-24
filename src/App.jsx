@@ -19,6 +19,8 @@ function App() {
   const { t } = useTranslation();
   const [color, setColor] = useState(DEFAULT_CONFIG.color);
   const [dimensions, setDimensions] = useState(DEFAULT_CONFIG.dimensions);
+  const [wallCount, setWallCount] = useState(2);
+  const [wallWidths, setWallWidths] = useState([2.0, 1.5]);
   const [modelLoaded, setModelLoaded] = useState(false);
   const [savedConfigurations, setSavedConfigurations] = useState([]);
 
@@ -35,10 +37,26 @@ function App() {
     }));
   }, []);
 
+  // Handle wall count change
+  const handleWallCountChange = useCallback((count) => {
+    setWallCount(count);
+    setWallWidths(prev => {
+      const newWidths = Array.from({ length: count }, (_, i) => prev[i] || 2.0);
+      return newWidths;
+    });
+  }, []);
+
+  // Handle individual wall width change
+  const handleWallWidthChange = useCallback((index, width) => {
+    setWallWidths(prev => prev.map((w, i) => i === index ? width : w));
+  }, []);
+
   // Reset to default configuration
   const handleReset = useCallback(() => {
     setColor(DEFAULT_CONFIG.color);
     setDimensions(DEFAULT_CONFIG.dimensions);
+    setWallCount(2);
+    setWallWidths([2.0, 1.5]);
   }, []);
 
   // Handle model load
@@ -116,6 +134,7 @@ function App() {
                   <SofaScene
                     color={color}
                     dimensions={dimensions}
+                    wallWidths={wallWidths}
                     onModelLoad={handleModelLoad}
                   />
                 </Suspense>
@@ -138,8 +157,12 @@ function App() {
             <ControlPanel
               color={color}
               dimensions={dimensions}
+              wallCount={wallCount}
+              wallWidths={wallWidths}
               onColorChange={handleColorChange}
               onDimensionChange={handleDimensionChange}
+              onWallCountChange={handleWallCountChange}
+              onWallWidthChange={handleWallWidthChange}
               onReset={handleReset}
               onSaveConfiguration={handleSaveConfiguration}
             />

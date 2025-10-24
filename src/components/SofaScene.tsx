@@ -4,6 +4,10 @@ import * as THREE from "three";
 import { OrbitControls as OrbitControlsImpl } from "three/examples/jsm/controls/OrbitControls";
 import { Loader2 } from "lucide-react";
 
+// Create a simple sofa using geometric shapes
+const legRadius = 0.08; // Larger leg radius
+const legHeight = 0.3; // Fixed leg height
+const thickness = 0.1; // Arm and back thickness
 // Simple OrbitControls component using Three.js directly
 function OrbitControls() {
   const { camera, gl } = useThree();
@@ -45,27 +49,22 @@ function LoadingSpinner() {
 }
 
 // Geometric Sofa Model Component
-function SofaModel({ color, dimensions, onModelLoad }: any) {
+function SofaModel({ color, dimensions, width, position, rotation, onModelLoad }: any) {
   const groupRef = useRef<any>();
 
-  // Create a simple sofa using geometric shapes
-  const legRadius = 0.08; // Larger leg radius
-  const legHeight = 0.3; // Fixed leg height
-  const thickness = 0.1; // Arm and back thickness
-  
   const sofaGeometry = useMemo(() => {
     return {
-      seat: <boxGeometry args={[dimensions.width, 0.2, dimensions.depth - thickness]} />,
+      seat: <boxGeometry args={[width, 0.2, dimensions.depth ]} />,
       // args = [width, height, depth] = [x, z, y]
-      back: <boxGeometry args={[dimensions.width, dimensions.height, thickness]} />,
-      armLeft: <boxGeometry args={[thickness, dimensions.height * 0.5, dimensions.depth - thickness]} />,
-      armRight: <boxGeometry args={[thickness, dimensions.height * 0.5, dimensions.depth - thickness]} />,
+      back: <boxGeometry args={[width, dimensions.height, thickness]} />,
+      armLeft: <boxGeometry args={[thickness, dimensions.height * 0.5, dimensions.depth]} />,
+      armRight: <boxGeometry args={[thickness, dimensions.height * 0.5, dimensions.depth]} />,
       leg1: <cylinderGeometry args={[legRadius, legRadius, legHeight]} />,
       leg2: <cylinderGeometry args={[legRadius, legRadius, legHeight]} />,
       leg3: <cylinderGeometry args={[legRadius, legRadius, legHeight]} />,
       leg4: <cylinderGeometry args={[legRadius, legRadius, legHeight]} />,
     };
-  }, [dimensions, legRadius, thickness]);
+  }, [width, dimensions, legRadius, thickness]);
 
   const sofaMaterial = useMemo(() => {
     return <meshStandardMaterial color={color} />;
@@ -79,7 +78,7 @@ function SofaModel({ color, dimensions, onModelLoad }: any) {
   }, [onModelLoad]);
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} position={position} rotation={rotation}>
       {/* Seat - centered at origin */}
       {/* position = [x, z, y] = [width, depth, height] */}
       <mesh position={[0, 0, 0]} castShadow receiveShadow>
@@ -88,37 +87,41 @@ function SofaModel({ color, dimensions, onModelLoad }: any) {
       </mesh>
 
       {/* Back - starts at top of seat, positioned at rear edge */}
-      <mesh position={[0, 0.1 + dimensions.height * 0.5, -(dimensions.depth - thickness*2) * 0.5]} castShadow receiveShadow>
+      <mesh
+        position={[0, 0.1 + dimensions.height * 0.5, -(dimensions.depth - thickness ) * 0.5]}
+        castShadow
+        receiveShadow
+      >
         {sofaGeometry.back}
         {sofaMaterial}
       </mesh>
 
       {/* Left Arm - starts at top of seat */}
-      <mesh position={[-(dimensions.width * 0.5 - 0.05), 0.1 + dimensions.height * 0.25, 0]} castShadow receiveShadow>
+      <mesh position={[-(width * 0.5 - 0.05), 0.1 + dimensions.height * 0.25, 0]} castShadow receiveShadow>
         {sofaGeometry.armLeft}
         {sofaMaterial}
       </mesh>
 
       {/* Right Arm - starts at top of seat */}
-      <mesh position={[dimensions.width * 0.5 - 0.05, 0.1 + dimensions.height * 0.25, 0]} castShadow receiveShadow>
+      <mesh position={[width * 0.5 - 0.05, 0.1 + dimensions.height * 0.25, 0]} castShadow receiveShadow>
         {sofaGeometry.armRight}
         {sofaMaterial}
       </mesh>
 
       {/* Legs - positioned inside the sofa edges */}
-      <mesh position={[-dimensions.width * 0.4, -0.25, -dimensions.depth * 0.35]} castShadow receiveShadow>
+      <mesh position={[-width * 0.4, -0.25, -dimensions.depth * 0.35]} castShadow receiveShadow>
         {sofaGeometry.leg1}
         {sofaMaterial}
       </mesh>
-      <mesh position={[dimensions.width * 0.4, -0.25, -dimensions.depth * 0.35]} castShadow receiveShadow>
+      <mesh position={[width * 0.4, -0.25, -dimensions.depth * 0.35]} castShadow receiveShadow>
         {sofaGeometry.leg2}
         {sofaMaterial}
       </mesh>
-      <mesh position={[-dimensions.width * 0.4, -0.25, dimensions.depth * 0.35]} castShadow receiveShadow>
+      <mesh position={[-width * 0.4, -0.25, dimensions.depth * 0.35]} castShadow receiveShadow>
         {sofaGeometry.leg3}
         {sofaMaterial}
       </mesh>
-      <mesh position={[dimensions.width * 0.4, -0.25, dimensions.depth * 0.35]} castShadow receiveShadow>
+      <mesh position={[width * 0.4, -0.25, dimensions.depth * 0.35]} castShadow receiveShadow>
         {sofaGeometry.leg4}
         {sofaMaterial}
       </mesh>
@@ -127,7 +130,54 @@ function SofaModel({ color, dimensions, onModelLoad }: any) {
 }
 
 // Main 3D Scene Component
-function SofaScene({ color, dimensions, onModelLoad }: any) {
+function SofaScene({ color, dimensions, wallWidths, onModelLoad }: any) {
+  // Calculate positions for L-shape layout
+  const sofaPositions = useMemo(() => {
+    const positions = [];
+    let currentX = 0;
+    let currentZ = 0;
+
+    for (let i = 0; i < wallWidths.length; i++) {
+      const width = wallWidths[i];
+
+      if (i === 0) {
+        // First sofa - horizontal along X-axis
+        positions.push({
+          position: [0, 0, 0] as [number, number, number],
+          rotation: [0, 0, 0] as [number, number, number],
+          width: width,
+        });
+        currentX += width;
+        currentZ += dimensions.depth;
+      } else if (i === 1) {
+        // Second sofa - perpendicular along Z-axis, positioned at the end of first
+        positions.push({
+          position: [-currentX/2 + dimensions.depth/2 - dimensions.depth, 0, width/2 + dimensions.depth/2 - thickness] as [number, number, number],
+          rotation: [0, Math.PI / 2, 0] as [number, number, number],
+          width: width,
+        });
+        currentZ += width;
+      } else if (i === 2) {
+        // Third sofa - horizontal along negative X-axis
+        positions.push({
+          position: [currentX - width / 2, 0, currentZ] as [number, number, number],
+          rotation: [0, Math.PI, 0] as [number, number, number],
+          width: width,
+        });
+        currentX -= width;
+      } else if (i === 3) {
+        // Fourth sofa - perpendicular along negative Z-axis
+        positions.push({
+          position: [currentX, 0, currentZ - width / 2] as [number, number, number],
+          rotation: [0, -Math.PI / 2, 0] as [number, number, number],
+          width: width,
+        });
+      }
+    }
+
+    return positions;
+  }, [wallWidths]);
+
   return (
     <Canvas
       shadows
@@ -144,13 +194,19 @@ function SofaScene({ color, dimensions, onModelLoad }: any) {
       />
       <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
-      {/* Render Single Sofa */}
+      {/* Render Multiple Sofas */}
       <Suspense fallback={null}>
-        <SofaModel
-          color={color}
-          dimensions={dimensions}
-          onModelLoad={onModelLoad}
-        />
+        {sofaPositions.map((sofa, index) => (
+          <SofaModel
+            key={index}
+            color={color}
+            dimensions={dimensions}
+            width={sofa.width}
+            position={sofa.position}
+            rotation={sofa.rotation}
+            onModelLoad={index === 0 ? onModelLoad : undefined}
+          />
+        ))}
       </Suspense>
 
       <OrbitControls />

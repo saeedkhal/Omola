@@ -51,9 +51,13 @@ function DimensionControl({ label, value, min, max, step, onChange, unit = 'm' }
 // Main Control Panel Component
 function ControlPanel({ 
   color, 
-  dimensions, 
+  dimensions,
+  wallCount,
+  wallWidths,
   onColorChange, 
-  onDimensionChange, 
+  onDimensionChange,
+  onWallCountChange,
+  onWallWidthChange,
   onReset,
   onSaveConfiguration 
 }: any) {
@@ -144,18 +148,59 @@ function ControlPanel({
         </div>
       </div>
 
-      {/* Dimension Controls */}
+      {/* Wall Configuration */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-700">{t('controls.adjustDimensions')}</h3>
+        <h3 className="text-lg font-semibold text-gray-700">{t('controls.wallConfiguration') || 'Wall Configuration'}</h3>
         
-        <DimensionControl
-          label={t('controls.width')}
-          value={dimensions.width}
-          min={0.5}
-          max={3.0}
-          step={0.1}
-          onChange={(value: number) => onDimensionChange('width', value)}
-        />
+        {/* Number of Walls */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            {t('controls.numberOfWalls') || 'Number of Walls'}
+          </label>
+          <div className="flex items-center space-x-3">
+            <input
+              type="range"
+              min={1}
+              max={4}
+              step={1}
+              value={wallCount}
+              onChange={(e) => onWallCountChange(parseInt(e.target.value))}
+              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            />
+            <input
+              type="number"
+              min={1}
+              max={4}
+              step={1}
+              value={wallCount}
+              onChange={(e) => onWallCountChange(parseInt(e.target.value))}
+              className="w-20 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        {/* Individual Wall Widths */}
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-gray-700">
+            {t('controls.wallWidths') || 'Wall Widths'}
+          </label>
+          {wallWidths.map((width: number, index: number) => (
+            <DimensionControl
+              key={index}
+              label={`${t('controls.wall') || 'Wall'} ${index + 1}`}
+              value={width}
+              min={0.5}
+              max={3.0}
+              step={0.1}
+              onChange={(value: number) => onWallWidthChange(index, value)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Shared Dimension Controls */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-gray-700">{t('controls.sharedDimensions') || 'Shared Dimensions'}</h3>
         
         <DimensionControl
           label={t('controls.height')}
@@ -197,7 +242,12 @@ function ControlPanel({
         <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('controls.currentConfiguration')}</h4>
         <div className="text-sm text-gray-600 space-y-1">
           <div>{t('controls.color')}: <span className="font-mono">{customColor}</span></div>
-          <div>{t('controls.width')}: {dimensions.width.toFixed(1)}m</div>
+          <div>{t('controls.walls') || 'Walls'}: {wallCount}</div>
+          {wallWidths.map((width: number, index: number) => (
+            <div key={index} className="pl-4">
+              {t('controls.wall') || 'Wall'} {index + 1}: {width.toFixed(1)}m
+            </div>
+          ))}
           <div>{t('controls.height')}: {dimensions.height.toFixed(1)}m</div>
           <div>{t('controls.depth')}: {dimensions.depth.toFixed(1)}m</div>
         </div>
