@@ -11,7 +11,7 @@
     "readyForBackend": "جاهز للتكامل مع الخادم باستخدام Node.js و Express و MongoDB"
   },
   "controls": {
-    "title": "خصص أريكتك",
+    "title": "تسعير الركنة",
     "chooseColor": "اختر اللون",
     "customColor": "لون مخصص",
     "popularColors": "الألوان الشائعة",
@@ -19,7 +19,7 @@
     "wallConfiguration": "تكوين الجدران",
     "numberOfWalls": "عدد الجدران",
     "wallWidths": "عرض الجدران",
-    "wall": "جدار",
+    "wall": "عرض الجدار",
     "walls": "جدران",
     "sharedDimensions": "الأبعاد المشتركة",
     "width": "العرض",
@@ -30,7 +30,7 @@
     "saveConfiguration": "حفظ التكوين",
     "currentConfiguration": "التكوين الحالي",
     "color": "اللون",
-    "savedConfigurations": "التكوينات المحفوظة",
+    "savedConfigurations": "التسعيرات المحفوظة",
     "configuration": "التكوين",
     "meter": "متر"
   },

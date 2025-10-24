@@ -241,7 +241,7 @@ function ControlPanel({
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('controls.currentConfiguration')}</h4>
         <div className="text-sm text-gray-600 space-y-1">
-          <div>{t('controls.color')}: <span className="font-mono">{customColor}</span></div>
+          <div className='flex items-center gap-2'>{t('controls.color')}: <div className="font-mono w-6 h-6 rounded-full" style={{ backgroundColor: customColor }}></div></div>
           <div>{t('controls.walls') || 'Walls'}: {wallCount}</div>
           {wallWidths.map((width: number, index: number) => (
             <div key={index} className="pl-4">
