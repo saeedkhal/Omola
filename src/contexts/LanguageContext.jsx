@@ -29,10 +29,10 @@ export const useTranslation = () => {
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
     // Check localStorage first, default to Arabic
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && translations[savedLanguage]) {
-      return savedLanguage;
-    }
+    // const savedLanguage = localStorage.getItem('language');
+    // if (savedLanguage && translations[savedLanguage]) {
+    //   return savedLanguage;
+    // }
     
     // Always default to Arabic
     return 'ar';
